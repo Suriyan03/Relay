@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { ArrowLeft, Sparkles, Inbox, Star, Archive, CheckCheck, RotateCcw, Check, History } from 'lucide-react';
+import { ArrowLeft, Sparkles, Inbox, Star, Archive, CheckCheck, RotateCcw, Check, History, Mail, MailOpen } from 'lucide-react';
 import { OwnerBadge, ReviewBadge, TagChips, ConfidenceMeter } from './badges';
 import { Avatar, Button, EmptyState, IconButton, cx } from './ui';
 import { useData } from '../context/Data.jsx';
-import { ReplyComposer } from './ReplyComposer.jsx';
 import { useToast } from '../context/Toast.jsx';
+import { ReplyComposer } from './ReplyComposer.jsx';
+import { ThreadInsights } from './ThreadInsights.jsx';
 import { OWNER } from '../lib/segments';
 import { shortTime } from '../lib/format';
 
@@ -69,6 +70,12 @@ export function ThreadDetail({ thread, onBack }) {
     }
   }
 
+  function toggleUnread() {
+    const next = !t.unread;
+    patchThread(t._id, { unread: next });
+    toast({ title: next ? 'Marked as unread' : 'Marked as read' });
+  }
+
   const suggestion = t.suggestion;
   const needsConfirm = t.needsReview && !t.reviewed;
 
@@ -88,13 +95,16 @@ export function ThreadDetail({ thread, onBack }) {
               <TagChips thread={t} />
             </div>
           </div>
-          <IconButton
-            icon={Star}
-            tone="star"
-            label={t.important ? 'Remove from important' : 'Mark as important'}
-            active={t.important}
-            onClick={() => patchThread(t._id, { important: !t.important })}
-          />
+          <div className="flex shrink-0 items-center">
+            <IconButton icon={t.unread ? MailOpen : Mail} label={t.unread ? 'Mark as read' : 'Mark as unread'} onClick={toggleUnread} />
+            <IconButton
+              icon={Star}
+              tone="star"
+              label={t.important ? 'Remove from important' : 'Mark as important'}
+              active={t.important}
+              onClick={() => patchThread(t._id, { important: !t.important })}
+            />
+          </div>
         </div>
 
         {/* Reply owner control */}
@@ -175,6 +185,8 @@ export function ThreadDetail({ thread, onBack }) {
             )}
           </section>
         )}
+
+        <ThreadInsights thread={t} />
 
         <ol className="space-y-4">
           {t.messages.map((m) => (

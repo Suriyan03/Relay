@@ -13,6 +13,7 @@ import { Notifications } from '../components/Notifications.jsx';
 import { AccountsButton } from '../components/AccountsPanel.jsx';
 import { ChatPanel } from '../components/ChatPanel.jsx';
 import { SimulateButton } from '../components/SimulateButton.jsx';
+import { UpcomingMeetings } from '../components/UpcomingMeetings.jsx';
 
 const GROUPS = [
   { id: 'main', label: null },
@@ -21,6 +22,13 @@ const GROUPS = [
   { id: 'done', label: 'Done' },
 ];
 const STATS = ['assistant', 'client', 'review', 'none'];
+const PULSE = [
+  ['inbox', 'Total'],
+  ['unread', 'Unread'],
+  ['important', 'Important'],
+  ['action', 'Need action'],
+  ['waiting', 'Waiting'],
+];
 
 export default function Dashboard() {
   const { session, signOut } = useSession();
@@ -50,7 +58,7 @@ export default function Dashboard() {
     setSelId(t._id);
     if (t.unread) patchThread(t._id, { unread: false });
   }
-  // Used by the bell, the chat and the simulator: show it in the list too.
+  // Used by the bell, the chat, the simulator and the meetings strip.
   function openById(id) {
     const t = threads.find((x) => x._id === id);
     if (!t) return;
@@ -66,9 +74,9 @@ export default function Dashboard() {
   return (
     <div className="flex h-dvh flex-col">
       {/* Top bar */}
-      <header className="flex items-center gap-2 border-b border-line bg-white px-4 py-3 sm:gap-3">
+      <header className="flex items-center gap-2 border-b border-line bg-white px-3 py-3 sm:px-4 sm:gap-3">
         <Logo />
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        <div className="ml-auto flex items-center gap-0.5 sm:gap-2">
           <Button variant="ai" size="sm" icon={Sparkles} title="Ask Relay" aria-label="Ask Relay" onClick={() => setChatOpen(true)}>
             <span className="hidden xl:inline">Ask Relay</span>
           </Button>
@@ -76,7 +84,9 @@ export default function Dashboard() {
           <Notifications onOpenThread={openById} />
           <AccountsButton clientName={clientName} />
           <ShareLink clientName={clientName} initialToken={me?.workspace?.inviteToken} />
-          <Button variant="ghost" size="sm" icon={LogOut} onClick={signOut}>Sign out</Button>
+          <Button variant="ghost" size="sm" icon={LogOut} onClick={signOut} aria-label="Sign out" title="Sign out">
+            <span className="hidden sm:inline">Sign out</span>
+          </Button>
         </div>
       </header>
 
@@ -104,14 +114,15 @@ export default function Dashboard() {
 
         <main className="flex min-w-0 flex-1 flex-col">
           {/* Greeting + stats (hidden while a thread is open on small screens) */}
-          <div className={cx('border-b border-line bg-white px-5 py-4', selected && 'hidden lg:block')}>
+          <div className={cx('border-b border-line bg-white px-4 py-3 sm:px-5 sm:py-4', selected && 'hidden lg:block')}>
             <h1 className="text-xl font-semibold">
               {greeting()}, {firstName(session.user.name)}
             </h1>
             <p className="text-sm text-ink-mute">
               {counts.assistant === 0 ? `Nothing needs you right now.` : `${plural(counts.assistant, 'conversation')} waiting for your reply for ${firstName(clientName)}.`}
             </p>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+
+            <div className="mt-3 hidden grid-cols-2 gap-2 sm:grid sm:grid-cols-4">
               {STATS.map((id) => {
                 const s = SEGMENT[id];
                 const tone = TONES[s.tone];
@@ -126,6 +137,22 @@ export default function Dashboard() {
                   </button>
                 );
               })}
+            </div>
+
+            <div className="mt-2 hidden flex-wrap gap-1.5 sm:flex">
+              {PULSE.map(([id, label]) => (
+                <button
+                  key={id}
+                  onClick={() => pick(id)}
+                  className={cx('inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] ring-1 ring-inset transition-colors', seg === id ? 'bg-ink text-white ring-ink' : 'bg-white text-ink-soft ring-line hover:bg-slate-50')}
+                >
+                  <span className="font-semibold tabular-nums">{counts[id]}</span> {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="hidden sm:block">
+              <UpcomingMeetings threads={threads} onOpen={openById} />
             </div>
           </div>
 

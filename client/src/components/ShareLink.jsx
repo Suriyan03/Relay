@@ -39,8 +39,8 @@ export function ShareLink({ clientName, initialToken }) {
     <Popover
       width="w-[22rem]"
       trigger={({ toggle }) => (
-        <Button variant="secondary" size="sm" icon={Link2} onClick={toggle}>
-          Share with {firstName(clientName)}
+                <Button variant="secondary" size="sm" icon={Link2} onClick={toggle} aria-label={`Share with ${firstName(clientName)}`} title={`Share with ${firstName(clientName)}`}>
+          <span className="hidden md:inline">Share with {firstName(clientName)}</span>
         </Button>
       )}
     >

@@ -1,9 +1,10 @@
-import { Inbox, UserCog, UserRound, BellOff, CircleHelp, ListChecks, Hourglass, CalendarClock, Star, Newspaper, CheckCheck, Archive } from 'lucide-react';
+import { Inbox, Mail, UserCog, UserRound, BellOff, CircleHelp, ListChecks, Hourglass, CalendarClock, Star, Newspaper, CheckCheck, Archive } from 'lucide-react';
 
 // Mirrors server/src/lib/segments.js
 const open = (t) => t.status === 'open';
 export const FILTERS = {
   inbox: (t) => t.status !== 'archived',
+  unread: (t) => t.status !== 'archived' && !!t.unread,
   assistant: (t) => open(t) && t.responsibility === 'assistant',
   client: (t) => open(t) && t.responsibility === 'client',
   none: (t) => open(t) && t.responsibility === 'none',
@@ -19,6 +20,7 @@ export const FILTERS = {
 
 export const SEGMENTS = [
   { id: 'inbox', label: 'All conversations', short: 'All', icon: Inbox, group: 'main', empty: 'No conversations yet. Connect an account to start.' },
+  { id: 'unread', label: 'Unread', short: 'Unread', icon: Mail, group: 'main', empty: 'You are all caught up.' },
   { id: 'assistant', label: 'Assistant to reply', short: 'Assistant', icon: UserCog, group: 'owner', tone: 'cobalt', empty: 'Nothing for you to reply to. Nice work.' },
   { id: 'client', label: 'Client to reply', short: 'Client', icon: UserRound, group: 'owner', tone: 'marigold', empty: 'Nothing is waiting on the client.' },
   { id: 'none', label: 'No reply needed', short: 'No reply', icon: BellOff, group: 'owner', tone: 'slate', empty: 'No informational conversations here.' },
