@@ -114,7 +114,7 @@ export default function Dashboard() {
 
         <main className="flex min-w-0 flex-1 flex-col">
           {/* Greeting + stats (hidden while a thread is open on small screens) */}
-          <div className={cx('border-b border-line bg-white px-4 py-3 sm:px-5 sm:py-4', selected && 'hidden lg:block')}>
+                    <div className={cx('border-b border-line bg-white px-4 py-3 sm:px-5 sm:py-4', selected && 'hidden')}>
             <h1 className="text-xl font-semibold">
               {greeting()}, {firstName(session.user.name)}
             </h1>
@@ -195,7 +195,7 @@ export default function Dashboard() {
             </section>
 
             {/* Detail */}
-            <section className={cx('min-w-0 flex-1 flex-col bg-canvas lg:flex', selected ? 'flex' : 'hidden')}>
+                        <section className={cx('min-h-0 min-w-0 flex-1 flex-col bg-canvas lg:flex', selected ? 'flex' : 'hidden')}>
               <ThreadDetail thread={selected} onBack={() => setSelId(null)} />
             </section>
           </div>

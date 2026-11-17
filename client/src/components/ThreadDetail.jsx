@@ -80,10 +80,10 @@ export function ThreadDetail({ thread, onBack }) {
   const needsConfirm = t.needsReview && !t.reviewed;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+        <div className="scroll-thin min-h-0 flex-1 overflow-y-auto">
       <header className="border-b border-line-soft bg-white px-5 py-4">
         <div className="flex items-start gap-2">
-          <IconButton icon={ArrowLeft} label="Back to list" onClick={onBack} className="-ml-2 lg:hidden" />
+                    <IconButton icon={ArrowLeft} label="Close conversation" onClick={onBack} className="-ml-2" />
           <div className="min-w-0 flex-1">
             <h2 className="text-xl font-semibold leading-snug">{t.subject}</h2>
             <p className="mt-0.5 text-sm text-ink-mute">
@@ -152,7 +152,7 @@ export function ThreadDetail({ thread, onBack }) {
         </div>
       </header>
 
-      <div className="scroll-thin min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5">
+            <div className="space-y-5 px-5 py-5">
         {suggestion && (
           <section className="rounded-xl border border-orchid-200 bg-white p-4">
             <p className="flex items-center gap-2 text-sm font-semibold text-orchid-700">
