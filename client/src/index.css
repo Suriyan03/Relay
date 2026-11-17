@@ -1,0 +1,37 @@
+@import '@fontsource-variable/instrument-sans';
+@import '@fontsource-variable/bricolage-grotesque';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+    overscroll-behavior-y: none;
+  }
+  h1, h2, h3 { @apply font-display; letter-spacing: -0.012em; }
+  :focus-visible { @apply outline outline-2 outline-offset-2 outline-cobalt-500; }
+  ::selection { background: #DCE7FF; }
+  button { @apply select-none; }
+  textarea, input, select { @apply font-sans; }
+}
+
+@layer components {
+  .skeleton {
+    background: linear-gradient(90deg, #e6eaf0 25%, #f2f4f8 37%, #e6eaf0 63%);
+    background-size: 400% 100%;
+    @apply animate-shimmer rounded-md;
+  }
+  .scroll-thin { scrollbar-width: thin; scrollbar-color: #C8D0DB transparent; }
+  .scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll-thin::-webkit-scrollbar-thumb { background: #C8D0DB; border-radius: 8px; }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
